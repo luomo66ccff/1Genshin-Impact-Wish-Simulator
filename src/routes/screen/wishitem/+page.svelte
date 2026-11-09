@@ -46,7 +46,6 @@
 	</title>
 
 	<meta name="title" content={APP_TITLE} />
-	<meta property="og:title" content={APP_TITLE} />
 	<meta property="twitter:title" content={APP_TITLE} />
 </svelte:head>
 

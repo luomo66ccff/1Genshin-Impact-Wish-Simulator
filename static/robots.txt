@@ -5,3 +5,5 @@ Allow: /privacy-policy
 Allow: /ads.txt
 Allow: /$
 Disallow: /
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+Sitemap: https://yswish.march7th.cn/sitemap.xml

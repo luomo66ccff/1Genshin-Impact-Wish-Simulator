@@ -16,7 +16,7 @@
 	} from '$lib/store/app-stores';
 	import { IDBUpdater } from '$lib/helpers/migrator/IDBUpdater';
 	import { storageLocal } from '$lib/helpers/dataAPI/api-localstore';
-	import { HOST, DESCRIPTION, KEYWORDS, APP_TITLE } from '$lib/env';
+	import { HOST, KEYWORDS, APP_TITLE, DESCRIPTION } from '$lib/env';
 	import { sync } from '$lib/helpers/dataAPI/sync';
 	import { autoExport } from '$lib/store/filesystem-store';
 	import { mountLocale } from '$lib/helpers/i18n';
@@ -29,6 +29,34 @@
 	import Iklan from '$lib/components/Iklan.svelte';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import Loader from './_index/InitialLoader.svelte';
+
+	const homepageDescription = "原神祈愿（抽卡）模拟器，在网页里体验每一次十连";
+	const homepageMetadata = {
+		"@context": "https://schema.org",
+		"@type": "WebApplication",
+		"name": "Genshin Impact Wish Simulator",
+		"url": "https://yswish.march7th.cn/",
+		"description": "原神祈愿（抽卡）模拟器，在网页里体验每一次十连",
+		"applicationCategory": "GameApplication",
+		"operatingSystem": "Web",
+		"inLanguage": "zh-CN",
+		"isPartOf": {
+			"@type": "WebSite",
+			"@id": "https://march7th.cn/#website",
+			"name": "March7th · 三月七工具站",
+			"url": "https://march7th.cn/"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"@id": "https://march7th.cn/#org",
+			"name": "March7th Team",
+			"url": "https://march7th.cn/"
+		}
+	};
+	$: isHomepage = $page.url.pathname === '/';
+	$: canonicalUrl = "https://yswish.march7th.cn" + $page.url.pathname;
+	$: isSharePage = $page.url.pathname === '/screen' || $page.url.pathname.startsWith('/screen/');
+	$: pageDescription = isHomepage ? homepageDescription : DESCRIPTION;
 
 	let innerHeight;
 	let innerWidth;
@@ -100,22 +128,26 @@
 <svelte:window bind:innerHeight bind:innerWidth />
 
 <svelte:head>
-	<meta name="description" content={DESCRIPTION} />
+	<link rel="canonical" href={canonicalUrl} />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta property="og:title" content={APP_TITLE} />
+	<meta name="description" content={pageDescription} />
+	<meta property="og:description" content={pageDescription} />
+	<meta name="robots" content={isSharePage ? "noindex,follow" : "index,follow,max-image-preview:large"} />
+	{#if isHomepage}
+		{@html `<script type="application/ld+json">${JSON.stringify(homepageMetadata).replace(/</g, '\\u003c')}</script>`}
+	{/if}
+
 	<meta name="keywords" content={KEYWORDS} />
-	<meta property="al:web:url" content={HOST} />
+	<meta property="al:web:url" content={canonicalUrl} />
 	<link rel="fluid-icon" href="{HOST}/meta-picture.jpg" title={APP_TITLE} />
 
-	<meta property="og:url" content={HOST} />
-	<meta property="og:type" content="website" />
-	<meta property="og:title" content={APP_TITLE} />
-	<meta property="og:description" content={DESCRIPTION} />
 	<meta property="og:image" content="{HOST}/meta-picture.jpg" />
 
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta property="twitter:domain" content={HOST.replace('https://', '').replace('http://', '')} />
-	<meta property="twitter:url" content={HOST} />
+	<meta property="twitter:domain" content="yswish.march7th.cn" />
+	<meta property="twitter:url" content={canonicalUrl} />
 	<meta name="twitter:title" content={APP_TITLE} />
-	<meta name="twitter:description" content={DESCRIPTION} />
+	<meta name="twitter:description" content={pageDescription} />
 	<meta name="twitter:image" content="{HOST}/meta-picture.jpg" />
 
 	<link
