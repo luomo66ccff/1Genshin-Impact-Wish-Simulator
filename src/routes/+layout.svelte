@@ -135,7 +135,7 @@
 	<meta property="og:description" content={pageDescription} />
 	<meta name="robots" content={isSharePage ? "noindex,follow" : "index,follow,max-image-preview:large"} />
 	{#if isHomepage}
-		{@html `<script type="application/ld+json">${JSON.stringify(homepageMetadata).replace(/</g, '\\u003c')}</script>`}
+		{@html '<scr' + 'ipt type="application/ld+json">' + JSON.stringify(homepageMetadata).replace(/</g, '\\u003c') + '</scr' + 'ipt>'}
 	{/if}
 
 	<meta name="keywords" content={KEYWORDS} />
